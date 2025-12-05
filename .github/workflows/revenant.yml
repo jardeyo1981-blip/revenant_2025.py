@@ -1,37 +1,31 @@
-# .github/workflows/revenant.yml  ← overwrite your file with this EXACT code
-
 name: Revenant Tape 2026 — LIVE FOREVER
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '*/7 * * * *'     # every 7 minutes
+    - cron: '*/7 * * * *'
   push:
 
 jobs:
-  run:
+  revenant:
     runs-on: ubuntu-latest
     timeout-minutes: 1440
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          path: revenant_2025.py   # Forces correct folder name
 
-      - name: Set up Python
+      - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
 
-      - name: NUCLEAR CLEAN + INSTALL (this fixes it forever)
+      - name: Brutal install — never fails again
+        working-directory: ./revenant_2025.py
         run: |
           rm -rf ~/.cache/pip
-          pip install --upgrade --force-reinstall --no-cache-dir pip
-          pip install --force-reinstall --no-cache-dir polygon-api-client yfinance requests feedparser
-
-      - name: Run Revenant
-        env:
-          MASSIVE_API_KEY: ${{ secrets.MASSIVE_API_KEY }}
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-          DISCORD_USER_ID: ${{ secrets.DISCORD_USER_ID }}
-        run: python revenant_2025.py
+          pip install --upgrade --force-reinstall --no-cache-dir pip setuptools wheel
+          pip install --force...
