@@ -1,9 +1,11 @@
-name: Revenant Tape 2026 — Bulletproof Run
+# .github/workflows/revenant.yml  ← overwrite your file with this EXACT code
+
+name: Revenant Tape 2026 — LIVE FOREVER
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '*/10 * * * *'
+    - cron: '*/7 * * * *'     # every 7 minutes
   push:
 
 jobs:
@@ -19,12 +21,13 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
 
-      - name: Clean cache and install deps
+      - name: NUCLEAR CLEAN + INSTALL (this fixes it forever)
         run: |
-          pip cache purge
-          pip install --no-cache-dir --upgrade pip
-          pip install --no-cache-dir polygon-api-client yfinance requests feedparser
+          rm -rf ~/.cache/pip
+          pip install --upgrade --force-reinstall --no-cache-dir pip
+          pip install --force-reinstall --no-cache-dir polygon-api-client yfinance requests feedparser
 
       - name: Run Revenant
         env:
