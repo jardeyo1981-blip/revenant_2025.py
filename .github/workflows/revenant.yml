@@ -1,39 +1,34 @@
-name: Revenant Tape 2026 — 24/7 Money Printer
+name: Revenant Tape 2026 — Bulletproof Run
 
 on:
-  workflow_dispatch:           # lets you start it manually
+  workflow_dispatch:
   schedule:
-    - cron: '*/10 * * * *'     # restarts every 10 minutes if it ever dies
-  push:                        # runs on every push (so updates go live instantly)
+    - cron: '*/10 * * * *'
+  push:
 
 jobs:
-  run-revenant:
+  run:
     runs-on: ubuntu-latest
-    timeout-minutes: 1440        # runs forever (24h limit, but cron restarts it)
+    timeout-minutes: 1440
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.11
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
+      - name: Clean cache and install deps
         run: |
-          pip install --upgrade pip
-          pip install polygon-api-client yfinance requests
-          pip install feedparser               # ← fixes your crash forever
+          pip cache purge
+          pip install --no-cache-dir --upgrade pip
+          pip install --no-cache-dir polygon-api-client yfinance requests feedparser
 
-      - name: Run Revenant Tape 2026
+      - name: Run Revenant
         env:
           MASSIVE_API_KEY: ${{ secrets.MASSIVE_API_KEY }}
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           DISCORD_USER_ID: ${{ secrets.DISCORD_USER_ID }}
-        run: |
-          python revenant_2025.py
-
-      - name: Keep alive (prevents GitHub from killing long runs)
-        if: always()
-        run: echo "Revenant is immortal"
+        run: python revenant_2025.py
