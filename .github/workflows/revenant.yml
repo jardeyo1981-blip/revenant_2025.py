@@ -1,0 +1,28 @@
+name: REVENANT TAPE 2025 - Run Forever
+
+on:
+  schedule:
+    - cron: '*/2 * * * *'    # Every 2 minutes
+  workflow_dispatch:         # Manual run button
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install polygon-api-client yfinance pandas requests
+          
+      - name: Run REVENANT TAPE 2025
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          python revenant_2025.py
