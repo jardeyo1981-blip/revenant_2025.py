@@ -2,9 +2,11 @@ name: Revenant Tape 2026 — LIVE FOREVER
 
 on:
   workflow_dispatch:
+  # manual trigger
   schedule:
-    - cron: '*/7 * * * *'
+    - cron: '*/7 * * * *'   # every 7 minutes
   push:
+    branches: [ main, master ]
 
 jobs:
   revenant:
@@ -14,8 +16,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          path: revenant_2025.py   # Forces correct folder name
+        # ← NO "path:" line at all → everything goes to root
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
@@ -23,9 +24,23 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
 
-      - name: Brutal install — never fails again
-        working-directory: ./revenant_2025.py
+      - name: Nuclear install — bypasses the bug forever
         run: |
           rm -rf ~/.cache/pip
           pip install --upgrade --force-reinstall --no-cache-dir pip setuptools wheel
-          pip install --force...
+          pip install --force-reinstall --no-cache-dir \
+            polygon-api-client yfinance requests feedparser
+
+      - name: Verify Polygon key
+        env:
+          MASSIVE_API_KEY: ${{ secrets.MASSIVE_API_KEY }}
+        run: |
+          python -c "from polygon import RESTClient; print('Polygon LIVE:', RESTClient('$MASSIVE_API_KEY').get_ticker_details('SPY').ticker)"
+
+      - name: LAUNCH REVENANT — WILL NEVER DIE
+        env:
+          MASSIVE_API_KEY: ${{ secrets.MASSIVE_API_KEY }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_USER_ID: ${{ secrets.DISCORD_USER_ID }}
+        run: |
+          python revenant.py
